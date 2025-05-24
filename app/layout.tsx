@@ -18,6 +18,9 @@ export const metadata = {
   metadataBase: new URL(defaultUrl),
   title: 'Next.js and Supabase Starter Kit',
   description: 'The fastest way to build apps with Next.js and Supabase',
+  icons: {
+    icon: "/images/logo.png",
+  },
 }
 
 const geistSans = Geist({
@@ -42,14 +45,14 @@ export default function RootLayout({
               disableTransitionOnChange
             >
               <div className="flex flex-col min-h-screen">
-                <nav className="sticky top-0 z-50 w-full border-b border-b-foreground/10 h-16 bg-pink-50 dark:bg-gray-900 transition-colors duration-300">
+                <nav className="sticky top-0 z-50 w-full  border-b-foreground/20 h-16 bg-pink-50 dark:bg-gray-900 transition-colors duration-300 shadow-xl">
                   <div className="max-w-5xl mx-auto flex justify-between items-center h-full px-4">
                     <div className="flex gap-5 items-center font-semibold">
                       <Link href="/">
                         <Image
                           src="/images/logo.png"
                           alt="Home"
-                          width={100}
+                          width={40}
                           height={50} 
                         />
                       </Link>

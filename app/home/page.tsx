@@ -8,7 +8,7 @@ import Navbar from "@/components/Navbar";
 
 export default function HomePage() {
   return (
-    <div className=" flex-1 space-y-8">
+    <div className=" flex-1 space-y-8 bg-pink-50 dark:bg-gray-900">
           <Navbar/>
           <ProductCard
            image="/images/menscup.png"

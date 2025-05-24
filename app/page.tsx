@@ -38,10 +38,11 @@ export default function Home() {
   return (
     <div className="w-full min-h-screen bg-pink-50 dark:bg-gray-900 transition-colors duration-300">
       {/* Hero Section */}
-      <section id="home" className="pt-32 pb-16 relative overflow-hidden">
+      <section id="home" className="pt-10 pb-16 relative overflow-hidden">
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex flex-col lg:flex-row items-center">
             <div className="lg:w-1/2 mb-12 lg:mb-0">
+              <h2 className='text-6xl lg:text-6xl font-bold mb-6 leading-tight bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent'>Hygeia-Kenya</h2>
               <h2 className="text-5xl lg:text-6xl font-bold mb-6 leading-tight">
                 <span className="bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
                   Menstrual Products,
@@ -55,10 +56,11 @@ export default function Home() {
                 Hygeia-Kenya leverages blockchain technology to make menstrual products more accessible and affordable for girls across Kenya.
               </p>
               <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-                <button className="flex items-center justify-center px-8 py-4 bg-pink-500 hover:bg-pink-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all" onClick={()=> router.push('/sign-up')}>
+                <button className="flex items-center justify-center px-8 py-4 bg-pink-500 hover:bg-pink-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all" onClick={()=> router.push('/sign-in')}>
                   Shop Now
                   <ArrowRight className="w-5 h-5 ml-2" />
-                </button>                
+                </button>
+                
               </div>
             </div>
             <div className="lg:w-1/2">
@@ -164,9 +166,9 @@ export default function Home() {
           
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
             {[
-              { number: "5,000+", description: "Girls Supported" },
+              { number: "50+", description: "Girls Supported" },
               { number: "24", description: "Counties Reached" },
-              { number: "120", description: "Local Jobs Created" },
+              { number: "10", description: "Local Jobs Created" },
               { number: "98%", description: "Customer Satisfaction" }
             ].map((stat, index) => (
               <div key={index} className="text-center">
@@ -182,7 +184,7 @@ export default function Home() {
                 "Hygeia-Kenya has transformed how we access menstrual products in our community. The blockchain payment system means we no longer need to worry about bank transfers or mobile money issues."
               </p>
               <div className="font-semibold text-gray-800 dark:text-white">Sarah Mwangi</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Community Leader, Nairobi</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Beneficiary</div>
             </div>
           </div>
         </div>
@@ -245,7 +247,7 @@ export default function Home() {
               <h4 className="text-lg font-semibold text-pink-500 mb-4">Resources</h4>
               <ul className="space-y-2">
                 <li><a href="#" className="text-gray-400 hover:text-pink-500 transition-colors">Menstrual Health Guide</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-pink-500 transition-colors">Blockchain Tutorial</a></li>
+               
                 <li><a href="#" className="text-gray-400 hover:text-pink-500 transition-colors">FAQs</a></li>
                 <li><a href="#" className="text-gray-400 hover:text-pink-500 transition-colors">Support</a></li>
               </ul>
