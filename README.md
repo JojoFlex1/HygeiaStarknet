@@ -1,3 +1,5 @@
+![image](https://github.com/user-attachments/assets/8f6f6db4-d3f9-49bd-9678-d04ecce0f129)
+
 # 🌿 Hygeia
 
 Hygeia is a seamless, user-friendly platform designed to make health and wellness payments easier and smarter. Built using **Next.js**, **Supabase**, and **Starknet smart contracts**, our app ensures secure, Web3-enabled transactions in a clean and intuitive interface.
