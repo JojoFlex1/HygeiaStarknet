@@ -19,7 +19,7 @@ export const metadata = {
   title: 'Next.js and Supabase Starter Kit',
   description: 'The fastest way to build apps with Next.js and Supabase',
   icons: {
-    icon: "/images/logo.png",
+    icon: '/images/logo.png',
   },
 }
 
@@ -36,7 +36,7 @@ export default function RootLayout({
   return (
     <CartProvider>
       <html lang="en" className={geistSans.className} suppressHydrationWarning>
-        <body className="bg-background text-foreground">
+        <body className="bg-background text-foreground" suppressHydrationWarning>
           <StarknetProvider>
             <ThemeProvider
               attribute="class"
@@ -53,7 +53,7 @@ export default function RootLayout({
                           src="/images/logo.png"
                           alt="Home"
                           width={40}
-                          height={50} 
+                          height={50}
                         />
                       </Link>
                       <ThemeSwitcher />
@@ -62,13 +62,6 @@ export default function RootLayout({
                   </div>
                 </nav>
                 <main className="flex-1">{children}</main>
-                <footer className="border-t py-6 text-center text-xs bg-pink-50 dark:bg-gray-900 transition-colors duration-300">
-                  <div className="max-w-5xl mx-auto px-4">
-                    <p>
-                      &copy; {new Date().getFullYear()} All rights reserved.
-                    </p>
-                  </div>
-                </footer>
               </div>
             </ThemeProvider>
           </StarknetProvider>
