@@ -36,7 +36,7 @@ export default function RootLayout({
   return (
     <CartProvider>
       <html lang="en" className={geistSans.className} suppressHydrationWarning>
-        <body className="bg-background text-foreground" suppressHydrationWarning>
+        <body className="bg-background text-foreground">
           <StarknetProvider>
             <ThemeProvider
               attribute="class"
