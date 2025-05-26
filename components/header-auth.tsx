@@ -52,7 +52,7 @@ export default async function AuthButton() {
     <div className="flex items-center gap-4">
       Hey, {user.email}!
       <form action={signOutAction}>
-        <Button type="submit" variant={"outline"}>
+        <Button type="submit" variant={"outline"} className=" bg-red-800 hover:bg-red-500">
           Sign out
         </Button>
         
