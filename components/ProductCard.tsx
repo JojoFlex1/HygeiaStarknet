@@ -14,6 +14,9 @@ import {
 } from "@/components/ui/dialog";
 import { ThumbsUp, ThumbsDown, Sparkles } from "lucide-react";
 import { useCart } from "@/app/context/cart-context";
+import { Contract, CallData } from "starknet";
+import { useConnect, useAccount, useContract } from "@starknet-react/core";
+import hygeniaAbi from "@/lib/hygenia.json";
 
 type ProductProps = {
   image: string;
@@ -25,7 +28,11 @@ type ProductProps = {
   tokensEarned?: number;
   isSponsored?: boolean;
   views?: number;
+  orderId?: number; // Add order ID for the product
 };
+
+// Replace with your actual contract address
+const CONTRACT_ADDRESS = "0xeaa0a0a35a63949d0c749393b3b73db559e773ec78f55ae25d733a15592933"; // Your deployed contract address
 
 export default function ProductCard({
   image,
@@ -37,13 +44,70 @@ export default function ProductCard({
   tokensEarned = 10,
   isSponsored = false,
   views = 2400,
+  orderId = Math.floor(Math.random() * 1000000), // Generate random order ID or pass from props
 }: ProductProps) {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isRated, setIsRated] = useState(false);
   const [userRating, setUserRating] = useState<"like" | "dislike" | null>(null);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
-  const handleBuyNow = () => {
-    setIsDetailsOpen(false);
+  const { account, address } = useAccount();
+  const { addToCart } = useCart();
+
+  // Create contract instance
+  const { contract } = useContract({
+    abi: hygeniaAbi,
+    address: CONTRACT_ADDRESS,
+  });
+
+  const handleBuyNow = async () => {
+    if (!account || !contract) {
+      alert("Please connect your wallet first");
+      return;
+    }
+
+    setIsProcessingPayment(true);
+
+    try {
+      const finalPrice = discountedPrice || price;
+      // Convert price to appropriate format (assuming your token has 18 decimals)
+      const amount = BigInt(finalPrice * 1e18);
+
+      // Call the make_payment function
+      const call = {
+        contractAddress: CONTRACT_ADDRESS,
+        entrypoint: "make_payment",
+        calldata: CallData.compile({
+          order_id: orderId,
+          amount: { low: amount & ((1n << 128n) - 1n), high: amount >> 128n }
+        })
+      };
+
+      const result = await account.execute([call]);
+      
+      // Wait for transaction confirmation
+      const receipt = await account.waitForTransaction(result.transaction_hash);
+      
+      if (receipt.status === "ACCEPTED_ON_L2" || receipt.status === "ACCEPTED_ON_L1") {
+        setIsDetailsOpen(false);
+        alert(`Payment successful! Transaction hash: ${result.transaction_hash}`);
+        
+        // Optionally add to cart after successful payment
+        addToCart({
+          title,
+          price: finalPrice,
+          image,
+          quantity: 1,
+        });
+      } else {
+        throw new Error("Transaction failed");
+      }
+    } catch (error) {
+      console.error("Payment failed:", error);
+      alert(`Payment failed: ${error.message || "Unknown error"}`);
+    } finally {
+      setIsProcessingPayment(false);
+    }
   };
 
   const handleRate = (rating: "like" | "dislike") => {
@@ -51,9 +115,6 @@ export default function ProductCard({
     setUserRating(rating);
     setIsRated(true);
   };
-
-  const { addToCart } = useCart();
-
 
   return (
     <>
@@ -80,14 +141,14 @@ export default function ProductCard({
             {discountedPrice ? (
               <>
                 <span className="text-pink-600 dark:text-pink-400 font-bold">
-                  KES {discountedPrice}
+                  USD {discountedPrice}
                 </span>
                 <span className="line-through text-muted-foreground text-sm">
-                  KES {price}
+                  USD {price}
                 </span>
               </>
             ) : (
-              <span className="font-bold">KES {price}</span>
+              <span className="font-bold">USD{price}</span>
             )}
             <Badge variant="outline" className="ml-auto border-pink-400 text-pink-600 dark:text-pink-300">
               {category}
@@ -180,19 +241,19 @@ export default function ProductCard({
               Cancel
             </Button>
             <Button
-  onClick={() => {
-    addToCart({
-      title,
-      price: discountedPrice || price,
-      image,
-      quantity: 1,
-    });
-    setIsDetailsOpen(false); // close modal
-  }}
-  className="bg-pink-600 hover:bg-pink-700 text-white dark:bg-pink-500 dark:hover:bg-pink-600"
->
-  Add to Cart
-</Button>
+              onClick={() => {
+                addToCart({
+                  title,
+                  price: discountedPrice || price,
+                  image,
+                  quantity: 1,
+                });
+                setIsDetailsOpen(false);
+              }}
+              className="bg-pink-600 hover:bg-pink-700 text-white dark:bg-pink-500 dark:hover:bg-pink-600"
+            >
+              Add to Cart
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
