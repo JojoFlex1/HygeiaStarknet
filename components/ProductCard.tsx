@@ -14,9 +14,9 @@ import {
 } from "@/components/ui/dialog";
 import { ThumbsUp, ThumbsDown, Sparkles } from "lucide-react";
 import { useCart } from "@/app/context/cart-context";
-import { Contract, CallData, Abi } from "starknet";
+import { Contract, CallData } from "starknet";
 import { useConnect, useAccount, useContract } from "@starknet-react/core";
-import hygeniaAbi from "@/lib/hygeia.json";
+import hygeniaAbi from "@/lib/hygenia.json";
 
 type ProductProps = {
   image: string;
@@ -32,7 +32,7 @@ type ProductProps = {
 };
 
 // Replace with your actual contract address
-const CONTRACT_ADDRESS = "0xeaa0a0a35a63949d0c749393b3b73db559e773ec78f55ae25d733a15592933"; // Your deployed contract address
+const CONTRACT_ADDRESS = "0xeaa0a0a35a63949d0c749393b3b73db559e773ec78f55ae25d733a15592933";
 
 export default function ProductCard({
   image,
@@ -54,9 +54,9 @@ export default function ProductCard({
   const { account, address } = useAccount();
   const { addToCart } = useCart();
 
-  // Create contract instance with proper typing
+  // Create contract instance
   const { contract } = useContract({
-    abi: hygeniaAbi as Abi,
+    abi: hygeniaAbi,
     address: CONTRACT_ADDRESS,
   });
 
@@ -66,12 +66,23 @@ export default function ProductCard({
       return;
     }
 
+    // Debug logging
+    console.log("Contract Address:", CONTRACT_ADDRESS);
+    console.log("Account Address:", address);
+    console.log("Contract Instance:", contract);
+
     setIsProcessingPayment(true);
 
     try {
       const finalPrice = discountedPrice || price;
-      // Convert price to appropriate format (assuming your token has 18 decimals)
-      const amount = BigInt(finalPrice * 1e18);
+      // Convert price to wei (18 decimals) and create proper u256 structure
+      const amountInWei = BigInt(Math.floor(finalPrice * 1e18));
+      
+      // Create proper u256 format for Cairo
+      const u256Amount = {
+        low: amountInWei & 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFn, // Lower 128 bits
+        high: amountInWei >> 128n // Upper 128 bits
+      };
 
       // Call the make_payment function
       const call = {
@@ -79,7 +90,7 @@ export default function ProductCard({
         entrypoint: "make_payment",
         calldata: CallData.compile({
           order_id: orderId,
-          amount: { low: amount & ((1n << 128n) - 1n), high: amount >> 128n }
+          amount: u256Amount
         })
       };
 
@@ -88,14 +99,7 @@ export default function ProductCard({
       // Wait for transaction confirmation
       const receipt = await account.waitForTransaction(result.transaction_hash);
       
-      // Check if transaction was successful
-      // Handle different receipt types properly
-      const isSuccessful = 
-        ('execution_status' in receipt && receipt.execution_status === "SUCCEEDED") ||
-        ('status' in receipt && (receipt.status === "ACCEPTED_ON_L2" || receipt.status === "ACCEPTED_ON_L1")) ||
-        ('finality_status' in receipt && (receipt.finality_status === "ACCEPTED_ON_L2" || receipt.finality_status === "ACCEPTED_ON_L1"));
-
-      if (isSuccessful) {
+      if (receipt.status === "ACCEPTED_ON_L2" || receipt.status === "ACCEPTED_ON_L1") {
         setIsDetailsOpen(false);
         alert(`Payment successful! Transaction hash: ${result.transaction_hash}`);
         
@@ -107,13 +111,11 @@ export default function ProductCard({
           quantity: 1,
         });
       } else {
-        throw new Error("Transaction failed or was rejected");
+        throw new Error("Transaction failed");
       }
-    } catch (error: unknown) {
+    } catch (error) {
       console.error("Payment failed:", error);
-      // Fix: Proper error handling for unknown type
-      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
-      alert(`Payment failed: ${errorMessage}`);
+      alert(`Payment failed: ${error.message || "Unknown error"}`);
     } finally {
       setIsProcessingPayment(false);
     }
@@ -150,14 +152,14 @@ export default function ProductCard({
             {discountedPrice ? (
               <>
                 <span className="text-pink-600 dark:text-pink-400 font-bold">
-                  USD {discountedPrice}
+                  ${discountedPrice}
                 </span>
                 <span className="line-through text-muted-foreground text-sm">
-                  USD {price}
+                  ${price}
                 </span>
               </>
             ) : (
-              <span className="font-bold">USD{price}</span>
+              <span className="font-bold">${price}</span>
             )}
             <Badge variant="outline" className="ml-auto border-pink-400 text-pink-600 dark:text-pink-300">
               {category}
@@ -177,9 +179,8 @@ export default function ProductCard({
             <Button
               className="w-full bg-pink-600 hover:bg-pink-700 text-white dark:bg-pink-500 dark:hover:bg-pink-600"
               onClick={handleBuyNow}
-              disabled={isProcessingPayment}
             >
-              {isProcessingPayment ? "Processing..." : "Buy Now"}
+              Buy Now
             </Button>
           </div>
         </div>
