@@ -14,9 +14,9 @@ import {
 } from "@/components/ui/dialog";
 import { ThumbsUp, ThumbsDown, Sparkles } from "lucide-react";
 import { useCart } from "@/app/context/cart-context";
-import { Contract, CallData } from "starknet";
+import { Contract, CallData, Abi } from "starknet";
 import { useConnect, useAccount, useContract } from "@starknet-react/core";
-import hygeniaAbi from "@/lib/hygenia.json";
+import hygeniaAbi from "@/lib/hygeia.json";
 
 type ProductProps = {
   image: string;
@@ -56,7 +56,7 @@ export default function ProductCard({
 
   // Create contract instance
   const { contract } = useContract({
-    abi: hygeniaAbi,
+    abi: hygeniaAbi as Abi,
     address: CONTRACT_ADDRESS,
   });
 
@@ -99,7 +99,12 @@ export default function ProductCard({
       // Wait for transaction confirmation
       const receipt = await account.waitForTransaction(result.transaction_hash);
       
-      if (receipt.status === "ACCEPTED_ON_L2" || receipt.status === "ACCEPTED_ON_L1") {
+      // Fix: Check the correct properties that exist on the receipt
+      const isSuccessful = 
+        ('execution_status' in receipt && receipt.execution_status === "SUCCEEDED") ||
+        ('finality_status' in receipt && (receipt.finality_status === "ACCEPTED_ON_L2" || receipt.finality_status === "ACCEPTED_ON_L1"));
+
+      if (isSuccessful) {
         setIsDetailsOpen(false);
         alert(`Payment successful! Transaction hash: ${result.transaction_hash}`);
         
@@ -111,11 +116,22 @@ export default function ProductCard({
           quantity: 1,
         });
       } else {
-        throw new Error("Transaction failed");
+        throw new Error("Transaction failed or was reverted");
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Payment failed:", error);
-      alert(`Payment failed: ${error.message || "Unknown error"}`);
+      
+      // Fix: Proper error handling for unknown type
+      let errorMessage = "Unknown error occurred";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      } else if (error && typeof error === 'object' && 'message' in error) {
+        errorMessage = String(error.message);
+      }
+      
+      alert(`Payment failed: ${errorMessage}`);
     } finally {
       setIsProcessingPayment(false);
     }
@@ -179,8 +195,9 @@ export default function ProductCard({
             <Button
               className="w-full bg-pink-600 hover:bg-pink-700 text-white dark:bg-pink-500 dark:hover:bg-pink-600"
               onClick={handleBuyNow}
+              disabled={isProcessingPayment}
             >
-              Buy Now
+              {isProcessingPayment ? "Processing..." : "Buy Now"}
             </Button>
           </div>
         </div>
