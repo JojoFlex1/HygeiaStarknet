@@ -34,7 +34,7 @@ export default function CartPage() {
                 />
                 <div>
                   <p className="font-medium">{item.title}</p>
-                  <p>Price: KES {item.price}</p>
+                  <p>Price: USD {item.price}</p>
                   <p>Quantity: {item.quantity}</p>
                 </div>
               </div>
@@ -52,7 +52,7 @@ export default function CartPage() {
             <h2 className="text-xl font-semibold">Order Summary</h2>
             <div className="flex justify-between text-lg">
               <span>Subtotal:</span>
-              <span>KES {subtotal.toFixed(2)}</span>
+              <span>USD {subtotal.toFixed(2)}</span>
             </div>
             <button
               className="w-full bg-pink-600 hover:bg-pink-700 text-white font-semibold py-3 rounded-md transition-colors"
