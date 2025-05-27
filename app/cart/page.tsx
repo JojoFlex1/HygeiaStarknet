@@ -16,7 +16,7 @@ export default function CartPage() {
       <Navbar />
 
       {cart.length === 0 ? (
-        <div className="text-center mt-10">Your cart is empty</div>
+        <div className="text-center mt-10 bg-pink-50 dark:bg-gray-900">Your cart is empty</div>
       ) : (
         <div className="p-6 space-y-6 max-w-3xl mx-auto">
           <h1 className="text-2xl font-bold">Your Cart</h1>
@@ -34,7 +34,7 @@ export default function CartPage() {
                 />
                 <div>
                   <p className="font-medium">{item.title}</p>
-                  <p>Price: USD {item.price}</p>
+                  <p>Price: ${item.price}</p>
                   <p>Quantity: {item.quantity}</p>
                 </div>
               </div>
