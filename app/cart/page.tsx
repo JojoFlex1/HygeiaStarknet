@@ -52,7 +52,7 @@ export default function CartPage() {
             <h2 className="text-xl font-semibold">Order Summary</h2>
             <div className="flex justify-between text-lg">
               <span>Subtotal:</span>
-              <span>USD {subtotal.toFixed(2)}</span>
+              <span>${subtotal.toFixed(2)}</span>
             </div>
             <button
               className="w-full bg-pink-600 hover:bg-pink-700 text-white font-semibold py-3 rounded-md transition-colors"
