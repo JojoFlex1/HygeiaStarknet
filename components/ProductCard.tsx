@@ -14,9 +14,10 @@ import {
 } from "@/components/ui/dialog";
 import { ThumbsUp, ThumbsDown, Sparkles } from "lucide-react";
 import { useCart } from "@/app/context/cart-context";
-import { Contract, CallData, Abi } from "starknet";
+import { Contract, CallData, Abi, cairo } from "starknet";
 import { useConnect, useAccount, useContract } from "@starknet-react/core";
 import hygeniaAbi from "@/lib/hygeia.json";
+import BigNumber from "bignumber.js";
 
 type ProductProps = {
   image: string;
@@ -66,7 +67,6 @@ export default function ProductCard({
       return;
     }
 
-    // Debug logging
     console.log("Contract Address:", CONTRACT_ADDRESS);
     console.log("Account Address:", address);
     console.log("Contract Instance:", contract);
@@ -75,31 +75,43 @@ export default function ProductCard({
 
     try {
       const finalPrice = discountedPrice || price;
-      // Convert price to wei (18 decimals) and create proper u256 structure
-      const amountInWei = BigInt(Math.floor(finalPrice * 1e18));
       
-      // Create proper u256 format for Cairo
-      const u256Amount = {
-        low: amountInWei & 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFn, // Lower 128 bits
-        high: amountInWei >> 128n // Upper 128 bits
-      };
+      // Convert price to appropriate format using BigNumber like in the transfer example
+      const amountToTransfer = BigNumber(finalPrice).multipliedBy(10 ** 18).toNumber();
+      
+      // Create contract instance for multicall operations
+      const contractInstance = new Contract(hygeniaAbi as Abi, CONTRACT_ADDRESS, account);
+      
+      // Populate calls using the contract instance (similar to transfer example)
+      const paymentCall = contractInstance.populate('make_payment', [orderId, cairo.uint256(amountToTransfer)]);
+      
+      // You can add more calls here if needed, for example:
+      // const tokenRewardCall = contractInstance.populate('award_tokens', [address, tokensEarned]);
+      
+      // Create multicall array similar to the transfer example
+      const multicall = [
+        {
+          contractAddress: CONTRACT_ADDRESS,
+          entrypoint: 'make_payment',
+          calldata: paymentCall.calldata
+        },
+        // Add more calls if needed:
+        // {
+        //   contractAddress: CONTRACT_ADDRESS,
+        //   entrypoint: 'award_tokens',
+        //   calldata: tokenRewardCall.calldata
+        // },
+      ];
 
-      // Call the make_payment function
-      const call = {
-        contractAddress: CONTRACT_ADDRESS,
-        entrypoint: "make_payment",
-        calldata: CallData.compile({
-          order_id: orderId,
-          amount: u256Amount
-        })
-      };
-
-      const result = await account.execute([call]);
+      // Execute multicall using account.execute() like in the transfer example
+      const result = await account.execute(multicall);
+      
+      console.log("Multicall result:", result);
       
       // Wait for transaction confirmation
       const receipt = await account.waitForTransaction(result.transaction_hash);
       
-      // Fix: Check the correct properties that exist on the receipt
+      // Check transaction success
       const isSuccessful = 
         ('execution_status' in receipt && receipt.execution_status === "SUCCEEDED") ||
         ('finality_status' in receipt && (receipt.finality_status === "ACCEPTED_ON_L2" || receipt.finality_status === "ACCEPTED_ON_L1"));
@@ -121,7 +133,6 @@ export default function ProductCard({
     } catch (error: unknown) {
       console.error("Payment failed:", error);
       
-      // Fix: Proper error handling for unknown type
       let errorMessage = "Unknown error occurred";
       if (error instanceof Error) {
         errorMessage = error.message;
