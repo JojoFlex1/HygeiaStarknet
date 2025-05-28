@@ -32,7 +32,7 @@ type ProductProps = {
 };
 
 // Replace with your actual contract address
-const CONTRACT_ADDRESS = "0xeaa0a0a35a63949d0c749393b3b73db559e773ec78f55ae25d733a15592933";
+const CONTRACT_ADDRESS = "0x73751fd6a6a217b3f52b4ba2e24617cd4f2af760547448ab5d4ff507136f7a8";
 
 export default function ProductCard({
   image,

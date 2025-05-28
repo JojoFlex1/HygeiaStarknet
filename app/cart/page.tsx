@@ -12,7 +12,7 @@ export default function CartPage() {
   );
 
   return (
-    <div className="flex-1 space-y-8 bg-pink-50 dark:bg-gray-900">
+    <div className="flex-1 space-y-8 bg-pink-50 dark:bg-gray-900 min-h-screen">
       <Navbar />
 
       {cart.length === 0 ? (
