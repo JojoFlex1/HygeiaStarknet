@@ -67,61 +67,53 @@ export default function ProductCard({
   const tokensEarned = tokens_earned || 10;
   const isSponsored = is_sponsored || false;
 
-  // Create contract instance
-  const { contract } = useContract({
-    abi: hygeniaAbi as Abi,
-    address: CONTRACT_ADDRESS,
-  });
-
   const handleBuyNow = async () => {
-    if (!account || !contract) {
+    if (!account) {
       alert("Please connect your wallet first");
       return;
     }
 
     console.log("Contract Address:", CONTRACT_ADDRESS);
     console.log("Account Address:", address);
-    console.log("Contract Instance:", contract);
 
     setIsProcessingPayment(true);
 
     try {
       const finalPrice = discountedPrice || price;
       
-      // Convert price to appropriate format using BigNumber like in the transfer example
+      // Convert price to appropriate format using BigNumber
       const amountToTransfer = BigNumber(finalPrice).multipliedBy(10 ** 18).toNumber();
       
-      // Create contract instance for multicall operations
+      // Create contract instance with account for populate calls
       const contractInstance = new Contract(hygeniaAbi as Abi, CONTRACT_ADDRESS, account);
       
-      // Populate calls using the contract instance (similar to transfer example)
+      // Populate the payment call
       const paymentCall = contractInstance.populate('make_payment', [orderId, cairo.uint256(amountToTransfer)]);
       
-      // You can add more calls here if needed, for example:
-      // const tokenRewardCall = contractInstance.populate('award_tokens', [address, tokensEarned]);
-      
-      // Create multicall array similar to the transfer example
+      // Create multicall array following the guidance pattern
       const multicall = [
         {
           contractAddress: CONTRACT_ADDRESS,
           entrypoint: 'make_payment',
           calldata: paymentCall.calldata
         },
-        // Add more calls if needed:
-        // {
-        //   contractAddress: CONTRACT_ADDRESS,
-        //   entrypoint: 'award_tokens',
-        //   calldata: tokenRewardCall.calldata
-        // },
+        // Add more calls if needed, for example token rewards:
+       {
+         contractAddress: CONTRACT_ADDRESS,
+          entrypoint: 'award_tokens',
+        calldata: tokenRewardCall.calldata
+        },
       ];
 
-      // Execute multicall using account.execute() like in the transfer example
+      // Execute multicall using account.execute()
       const result = await account.execute(multicall);
       
-      console.log("Multicall result:", result);
+      console.log("Transaction result:", result);
       
       // Wait for transaction confirmation
       const receipt = await account.waitForTransaction(result.transaction_hash);
+      
+      console.log("Transaction receipt:", receipt);
       
       // Check transaction success
       const isSuccessful = 
@@ -132,7 +124,7 @@ export default function ProductCard({
         setIsDetailsOpen(false);
         alert(`Payment successful! Transaction hash: ${result.transaction_hash}`);
         
-        // Optionally add to cart after successful payment
+        // Add to cart after successful payment
         addToCart({
           title,
           price: finalPrice,
