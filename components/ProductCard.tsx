@@ -20,32 +20,36 @@ import hygeniaAbi from "@/lib/hygeia.json";
 import BigNumber from "bignumber.js";
 
 type ProductProps = {
-  image: string;
+  id?: number;
+  image: string; // This will be the imageUrl from your homepage
   title: string;
   description: string;
   price: number;
   category?: string;
-  discountedPrice?: number;
-  tokensEarned?: number;
-  isSponsored?: boolean;
+  discounted_price?: number; // Match your DB column name
+  tokens_earned?: number; // Match your DB column name
+  is_sponsored?: boolean; // Match your DB column name
   views?: number;
-  orderId?: number; // Add order ID for the product
+  order_id?: number; // Match your DB column name
+  created_at?: string; // Common DB column
+  updated_at?: string; // Common DB column
 };
 
 // Replace with your actual contract address
 const CONTRACT_ADDRESS = "0x73751fd6a6a217b3f52b4ba2e24617cd4f2af760547448ab5d4ff507136f7a8";
 
 export default function ProductCard({
+  id,
   image,
   title,
   description,
   price,
   category = "Health",
-  discountedPrice,
-  tokensEarned = 10,
-  isSponsored = false,
+  discounted_price,
+  tokens_earned = 10,
+  is_sponsored = false,
   views = 2400,
-  orderId = Math.floor(Math.random() * 1000000), // Generate random order ID or pass from props
+  order_id,
 }: ProductProps) {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isRated, setIsRated] = useState(false);
@@ -54,6 +58,14 @@ export default function ProductCard({
 
   const { account, address } = useAccount();
   const { addToCart } = useCart();
+
+  // Use the order_id from DB or generate one if not provided
+  const orderId = order_id || id || Math.floor(Math.random() * 1000000);
+  
+  // Use discounted_price from DB or fall back to price
+  const discountedPrice = discounted_price;
+  const tokensEarned = tokens_earned || 10;
+  const isSponsored = is_sponsored || false;
 
   // Create contract instance
   const { contract } = useContract({
@@ -164,7 +176,15 @@ export default function ProductCard({
           </div>
         )}
         <div className="relative w-full h-48">
-          <img src={image} alt={title} className="w-full h-full object-cover" />
+          <img 
+            src={image} 
+            alt={title} 
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              // Fallback image if the image fails to load
+              e.currentTarget.src = '/placeholder-product.jpg';
+            }}
+          />
         </div>
 
         <div className="p-4 space-y-2 flex flex-col flex-grow">
@@ -231,7 +251,14 @@ export default function ProductCard({
             </DialogDescription>
           </DialogHeader>
 
-          <img src={image} alt={title} className="w-full h-48 object-cover rounded-md" />
+          <img 
+            src={image} 
+            alt={title} 
+            className="w-full h-48 object-cover rounded-md"
+            onError={(e) => {
+              e.currentTarget.src = '/placeholder-product.jpg';
+            }}
+          />
           <p className="text-sm dark:text-gray-300">{description}</p>
 
           <div className="flex justify-between items-center mt-4">
