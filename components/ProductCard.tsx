@@ -68,10 +68,11 @@ export default function ProductCard({
   const isSponsored = is_sponsored || false;
 
   const handleBuyNow = async () => {
-    if (!account) {
-      alert("Please connect your wallet first");
-      return;
-    }
+   if (!account || !address) {
+  alert("Please connect your wallet first");
+  return;
+}
+
 
     console.log("Contract Address:", CONTRACT_ADDRESS);
     console.log("Account Address:", address);
@@ -87,23 +88,32 @@ export default function ProductCard({
       // Create contract instance with account for populate calls
       const contractInstance = new Contract(hygeniaAbi as Abi, CONTRACT_ADDRESS, account);
       
+      console.log("Available contract methods:", Object.keys(contractInstance.functions || {}));
+      
       // Populate the payment call
       const paymentCall = contractInstance.populate('make_payment', [orderId, cairo.uint256(amountToTransfer)]);
       
-      // Create multicall array following the guidance pattern
+      // Start with payment call
       const multicall = [
         {
           contractAddress: CONTRACT_ADDRESS,
           entrypoint: 'make_payment',
           calldata: paymentCall.calldata
-        },
-        // Add more calls if needed, for example token rewards:
-       {
-         contractAddress: CONTRACT_ADDRESS,
-          entrypoint: 'award_tokens',
-        calldata: tokenRewardCall.calldata
-        },
+        }
       ];
+      
+      // Add token reward call only if the method exists
+      const availableMethods = Object.keys(contractInstance.functions || {});
+      if (availableMethods.includes('award_tokens')) {
+        const tokenRewardCall = contractInstance.populate('award_tokens', [address, tokensEarned]);
+        multicall.push({
+          contractAddress: CONTRACT_ADDRESS,
+          entrypoint: 'award_tokens',
+          calldata: tokenRewardCall.calldata
+        });
+      }
+
+      console.log("Multicall array:", multicall);
 
       // Execute multicall using account.execute()
       const result = await account.execute(multicall);
