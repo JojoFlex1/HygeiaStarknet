@@ -53,7 +53,7 @@ export default function Home() {
               <div className="relative">
                 <img
                   src="/images/menstrualProducts.png"
-                  alt="Hygeia-Kenya Menstrual Products"
+                  alt="Hygeia Menstrual Products"
                   className="w-full rounded-2xl shadow-2xl"
                 />
               </div>
@@ -67,7 +67,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-pink-500 mb-4">
-              Why Choose Hygeia-Kenya?
+              Why Choose Hygeia?
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
               We're revolutionizing access to menstrual health products through
@@ -195,9 +195,9 @@ export default function Home() {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
             {[
-              { number: '50+', description: 'Girls Supported' },
-              { number: '24', description: 'Counties Reached' },
-              { number: '10', description: 'Local Jobs Created' },
+              { number: '50+', description: 'Girls To Be Supported' },
+              { number: '24', description: 'Counties To Be Reached' },
+              { number: '10+', description: 'Local Jobs To Be Created' },
               { number: '98%', description: 'Customer Satisfaction' },
             ].map((stat, index) => (
               <div key={index} className="text-center">
@@ -214,7 +214,7 @@ export default function Home() {
           <div className="bg-pink-50 dark:bg-gray-700 rounded-xl p-8 max-w-4xl mx-auto">
             <div className="text-center">
               <p className="text-lg italic mb-6 text-gray-800 dark:text-gray-200">
-                "Hygeia-Kenya has transformed how we access menstrual products
+                "Hygeia has transformed how we access menstrual products
                 in our community. The blockchain payment system means we no
                 longer need to worry about bank transfers or mobile money
                 issues."
@@ -266,7 +266,7 @@ export default function Home() {
                   <Heart className="w-6 h-6 text-white" />
                 </div>
                 <h1 className="ml-3 text-2xl font-bold text-pink-500">
-                  Hygeia-Kenya
+                  Hygeia
                 </h1>
               </div>
               <p className="text-gray-400 leading-relaxed">
@@ -370,7 +370,7 @@ export default function Home() {
 
           <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
             <div className="text-gray-400 mb-4 md:mb-0">
-              © 2025 Hygeia-Kenya. All rights reserved.
+              © 2025 Hygeia. All rights reserved.
             </div>
             <div className="flex space-x-6">
               <a
