@@ -16,8 +16,8 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),
-  title: 'Next.js and Supabase Starter Kit',
-  description: 'The fastest way to build apps with Next.js and Supabase',
+  title: 'Hygeia-Kenya',
+  description: 'A Blockchain-powered menstrual health e-commerce platform that makes menstrual products more accessible, affordable and traceable for girls across Kenya.',
   icons: {
     icon: '/images/logo.png',
   },
