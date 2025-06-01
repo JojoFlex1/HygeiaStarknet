@@ -22,21 +22,22 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex flex-col lg:flex-row items-center">
             <div className="lg:w-1/2 mb-12 lg:mb-0">
-              <h2 className="text-6xl lg:text-6xl font-bold mb-6 leading-tight bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
-                Hygeia-Kenya
-              </h2>
+              
               <h2 className="text-5xl lg:text-6xl font-bold mb-6 leading-tight">
                 <span className="bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
-                  Menstrual Products,
+                  Eco-Friendly
                 </span>
                 <br />
                 <span className="bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
-                  Accessible through Blockchain
+                  Wellness for 
+                </span>
+                <br />
+                <span className="bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
+                  Everyone
                 </span>
               </h2>
               <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
-                Hygeia-Kenya leverages blockchain technology to make menstrual
-                products more accessible and affordable for girls across Kenya.
+                Hygeia is a clean, affordable platform that makes women's wellness products accessible to all, whether you're buying for yourself or choosing to sponsor someone else.
               </p>
               <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
                 <button
