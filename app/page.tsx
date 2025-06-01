@@ -37,7 +37,7 @@ export default function Home() {
                 </span>
               </h2>
               <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
-                Hygeia is a clean, affordable platform that makes women's wellness products accessible to all, whether you're buying for yourself or choosing to sponsor someone else.
+                Hygeia is a clean, affordable platform that makes women's wellness products accessible to all through <span className=' text-purple-600'>Blockchain technology</span>, whether you're buying for yourself or choosing to sponsor someone else.
               </p>
               <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
                 <button
