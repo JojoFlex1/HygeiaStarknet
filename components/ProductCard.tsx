@@ -26,16 +26,15 @@ type ProductProps = {
   description: string;
   price: number;
   category?: string;
-  discounted_price?: number; // Match your DB column name
-  tokens_earned?: number; // Match your DB column name
-  is_sponsored?: boolean; // Match your DB column name
+  discounted_price?: number; 
+  tokens_earned?: number;
+  is_sponsored?: boolean;
   views?: number;
-  order_id?: number; // Match your DB column name
-  created_at?: string; // Common DB column
-  updated_at?: string; // Common DB column
+  order_id?: number; 
+  created_at?: string;
+  updated_at?: string;
 };
 
-// Replace with your actual contract address
 const CONTRACT_ADDRESS = "0x73751fd6a6a217b3f52b4ba2e24617cd4f2af760547448ab5d4ff507136f7a8";
 
 export default function ProductCard({
@@ -58,11 +57,9 @@ export default function ProductCard({
 
   const { account, address } = useAccount();
   const { addToCart } = useCart();
-
-  // Use the order_id from DB or generate one if not provided
+  
   const orderId = order_id || id || Math.floor(Math.random() * 1000000);
   
-  // Use discounted_price from DB or fall back to price
   const discountedPrice = discounted_price;
   const tokensEarned = tokens_earned || 10;
   const isSponsored = is_sponsored || false;
@@ -82,18 +79,18 @@ export default function ProductCard({
     try {
       const finalPrice = discountedPrice || price;
       
-      // Convert price to appropriate format using BigNumber
+     
       const amountToTransfer = BigNumber(finalPrice).multipliedBy(10 ** 18).toNumber();
       
-      // Create contract instance with account for populate calls
+
       const contractInstance = new Contract(hygeniaAbi as Abi, CONTRACT_ADDRESS, account);
       
       console.log("Available contract methods:", Object.keys(contractInstance.functions || {}));
       
-      // Populate the payment call
+     
       const paymentCall = contractInstance.populate('make_payment', [orderId, cairo.uint256(amountToTransfer)]);
       
-      // Start with payment call
+     
       const multicall = [
         {
           contractAddress: CONTRACT_ADDRESS,
@@ -102,7 +99,7 @@ export default function ProductCard({
         }
       ];
       
-      // Add token reward call only if the method exists
+     
       const availableMethods = Object.keys(contractInstance.functions || {});
       if (availableMethods.includes('award_tokens')) {
         const tokenRewardCall = contractInstance.populate('award_tokens', [address, tokensEarned]);
@@ -115,17 +112,15 @@ export default function ProductCard({
 
       console.log("Multicall array:", multicall);
 
-      // Execute multicall using account.execute()
+     
       const result = await account.execute(multicall);
       
       console.log("Transaction result:", result);
       
-      // Wait for transaction confirmation
       const receipt = await account.waitForTransaction(result.transaction_hash);
       
       console.log("Transaction receipt:", receipt);
       
-      // Check transaction success
       const isSuccessful = 
         ('execution_status' in receipt && receipt.execution_status === "SUCCEEDED") ||
         ('finality_status' in receipt && (receipt.finality_status === "ACCEPTED_ON_L2" || receipt.finality_status === "ACCEPTED_ON_L1"));
@@ -134,7 +129,7 @@ export default function ProductCard({
         setIsDetailsOpen(false);
         alert(`Payment successful! Transaction hash: ${result.transaction_hash}`);
         
-        // Add to cart after successful payment
+       
         addToCart({
           title,
           price: finalPrice,
