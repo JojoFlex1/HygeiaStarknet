@@ -11,7 +11,7 @@ import { StarknetProvider } from '../lib/starknet-provider'
 import Image from 'next/image'
 
 const defaultUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
+  ? `https://hygeia-starknet.vercel.app/`
   : 'http://localhost:3000'
 
 export const metadata = {
