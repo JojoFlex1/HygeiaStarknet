@@ -10,10 +10,12 @@ import { CartProvider } from '@/app/context/cart-context'
 import { StarknetProvider } from '../lib/starknet-provider'
 import Image from 'next/image'
 
-const defaultUrl = 'https://hygeia-starknet.vercel.app'
+const defaultUrl = process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}`
+  : 'http://localhost:3000'
 
 export const metadata = {
-  metadataBase: new URL(defaultUrl),
+  metadataBase: new URL('https://hygeia-starknet.vercel.app'),
   title: 'Hygeia',
   description:
     'Hygeia is a blockchain-powered menstrual health e-commerce platform that makes menstrual products more accessible, affordable, and traceable for girls across Kenya.',
