@@ -11,17 +11,67 @@ import { StarknetProvider } from '../lib/starknet-provider'
 import Image from 'next/image'
 
 const defaultUrl = process.env.VERCEL_URL
-  ? `https://hygeia-starknet.vercel.app/`
+  ? `https://${process.env.VERCEL_URL}`
   : 'http://localhost:3000'
 
 export const metadata = {
-  metadataBase: new URL(defaultUrl),
+  metadataBase: new URL('https://hygeia-starknet.vercel.app'),
   title: 'Hygeia',
-  description: 'A Blockchain-powered menstrual health e-commerce platform that makes menstrual products more accessible, affordable and traceable for girls across Kenya.',
+  description:
+    'Hygeia is a blockchain-powered menstrual health e-commerce platform that makes menstrual products more accessible, affordable, and traceable for girls across Kenya.',
+
+  keywords: [
+    'Hygeia',
+    'menstrual health',
+    'e-commerce',
+    'blockchain',
+    'menstrual products',
+    'Kenya',
+    'affordable sanitary pads',
+    'traceability',
+  ],
+
+  authors: [{ name: 'Hygeia Team' }],
+  creator: 'Hygeia',
+
+  openGraph: {
+    title: 'Hygeia - Menstrual Health on the Blockchain',
+    description:
+      'A blockchain-powered e-commerce platform that empowers girls in Kenya through affordable and traceable menstrual products.',
+    url: 'https://hygeia-starknet.vercel.app',
+    siteName: 'Hygeia',
+    images: [
+      {
+        url: '/images/logo.png', // Ensure this path works in prod
+        width: 1200,
+        height: 630,
+        alt: 'Hygeia Logo',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Hygeia - Menstrual Health on the Blockchain',
+    description:
+      'Making menstrual products more accessible, affordable, and transparent for girls across Kenya.',
+    images: ['/images/logo.png'],
+    creator: 'https://x.com/JJ638055109535', // optional if you have a Twitter/X handle
+  },
+
   icons: {
     icon: '/images/logo.png',
+    shortcut: '/favicon.ico',
+    apple: '/apple-touch-icon.png', // optional
   },
-}
+
+  alternates: {
+    canonical: 'https://hygeia-starknet.vercel.app',
+  },
+};
+
 
 const geistSans = Geist({
   display: 'swap',
