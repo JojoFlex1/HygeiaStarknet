@@ -1,71 +1,95 @@
-import { signOutAction } from "@/app/actions";
-import { hasEnvVars } from "@/utils/supabase/check-env-vars";
-import Link from "next/link";
-import { Badge } from "./ui/badge";
-import { Button } from "./ui/button";
-import { createClient } from "@/utils/supabase/server";
+"use client";
+import Link from 'next/link'
+import { Button } from './ui/button'
+import { ThemeSwitcher } from './theme-switcher'
+import Image from 'next/image'
+import {
+  SignInButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from '@clerk/nextjs'
 
-export default async function AuthButton() {
-  const supabase = await createClient();
-  
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!hasEnvVars) {
-    return (
-      <>
-        <div className="flex gap-4 items-center">
-          <div>
-            <Badge
-              variant={"default"}
-              className="font-normal pointer-events-none"
-            >
-              Please update .env.local file with anon key and url
-            </Badge>
-          </div>
-          <div className="flex gap-2">
-            <Button
-              asChild
-              size="sm"
-              variant={"outline"}
-              disabled
-              className="opacity-75 cursor-none pointer-events-none"
-            >
-              <Link href="/sign-in">Sign in</Link>
-            </Button>
-            <Button
-              asChild
-              size="sm"
-              variant={"default"}
-              disabled
-              className="opacity-75 cursor-none pointer-events-none"
-            >
-              <Link href="/sign-up">Sign up</Link>
-            </Button>
-          </div>
-        </div>
-      </>
-    );
-  }
-  return user ? (
-    <div className="flex items-center gap-4">
-      Hey, {user.email}!
-      <form action={signOutAction}>
-        <Button type="submit" variant={"outline"} className=" bg-red-800 hover:bg-red-500">
-          Sign out
-        </Button>
-        
-      </form>
+export default function HeaderAuth() {
+  return (
+    <div className="max-w-5xl mx-auto flex justify-between items-center h-full px-4">
+      <div className="flex items-center font-semibold justify-between">
+        <Link href="/" className="flex items-center gap-2">
+          <Image
+            src="/images/logo.png"
+            alt="Home"
+            width={40}
+            height={40} // Fix aspect ratio warning
+          />
+          <h2 className="text-2xl font-bold leading-tight bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
+            Hygeia
+          </h2>
+        </Link>
+        <ThemeSwitcher />
+      </div>
+      
+      <div className="flex items-center gap-4">
+        <SignedIn>
+          <UserButton />
+        </SignedIn>
+        <SignedOut>
+          <SignInButton mode="modal">
+            <Button className="bg-pink-600">Sign In</Button>
+          </SignInButton>
+        </SignedOut>
+      </div>
     </div>
-  ) : (
-    <div className="flex gap-2">
-      {/* <Button asChild size="sm" variant={"outline"}>
-        <Link href="/sign-in">Sign in</Link>
-      </Button> */}
-      <Button asChild size="sm" variant={"default"}>
-        <Link href="/sign-in">Sign in</Link>
-      </Button>
-    </div>
-  );
+  )
 }
+
+// "use client";
+// import Link from 'next/link'
+// import { Button } from './ui/button'
+// import { ThemeSwitcher } from './theme-switcher'
+// import Image from 'next/image'
+// import {
+//   SignInButton,
+//   SignOutButton,
+//   SignUpButton,
+//   SignedIn,
+//   SignedOut,
+//   UserButton,
+//   ClerkProvider,
+// } from '@clerk/nextjs'
+
+// export default function AuthButton() {
+  
+//   return (
+//     <>
+//         <div className="flex flex-col min-h-screen">
+//           <nav className="sticky top-0 z-50 w-full  border-b-foreground/20 h-16 bg-pink-50 dark:bg-gray-900 transition-colors duration-300 shadow-xl">
+//             <div className="max-w-5xl mx-auto flex justify-between items-center h-full px-4">
+//               <div className="flex items-center font-semibold justify-between">
+//                 <Link href="/" className=" flex items-center gap-2">
+//                   <Image
+//                     src="/images/logo.png"
+//                     alt="Home"
+//                     width={40}
+//                     height={50}
+//                   />
+//                   <h2 className="text-2xl font-bold leading-tight bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
+//                     Hygeia
+//                   </h2>
+//                 </Link>
+
+//                 <ThemeSwitcher />
+//               </div>
+//               <SignedIn>
+//                 <UserButton />
+//               </SignedIn>
+//               <SignedOut>
+//                 <SignInButton mode="modal">
+//                   <Button className=" bg-pink-600">Sign In</Button>
+//                 </SignInButton>
+//               </SignedOut>
+//             </div>
+//           </nav>
+//         </div>
+//     </>
+//   )
+// }

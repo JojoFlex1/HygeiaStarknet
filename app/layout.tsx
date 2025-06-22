@@ -9,6 +9,7 @@ import './globals.css'
 import { CartProvider } from '@/app/context/cart-context'
 import { StarknetProvider } from '../lib/starknet-provider'
 import Image from 'next/image'
+import { ClerkProvider } from '@clerk/nextjs'
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://hygeia-starknet.vercel.app`
@@ -84,43 +85,28 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <CartProvider>
-      <html lang="en" className={geistSans.className} suppressHydrationWarning>
-        <body className="bg-background text-foreground">
-          <StarknetProvider>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <div className="flex flex-col min-h-screen">
-                <nav className="sticky top-0 z-50 w-full  border-b-foreground/20 h-16 bg-pink-50 dark:bg-gray-900 transition-colors duration-300 shadow-xl">
-                  <div className="max-w-5xl mx-auto flex justify-between items-center h-full px-4">
-                    <div className="flex items-center font-semibold justify-between">
-                      <Link href="/" className=' flex items-center gap-2'>
-                        <Image
-                          src="/images/logo.png"
-                          alt="Home"
-                          width={40}
-                          height={50}
-                        />
-                         <h2 className="text-2xl font-bold leading-tight bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
-                                        Hygeia
-                                      </h2>
-                      </Link>                     
-                       
-                      <ThemeSwitcher />
-                    </div>
-                    {!hasEnvVars ? <EnvVarWarning /> : <HeaderAuth />}
-                  </div>
-                </nav>
-                <main className="flex-1">{children}</main>
-              </div>
-            </ThemeProvider>
-          </StarknetProvider>
-        </body>
-      </html>
-    </CartProvider>
+    <ClerkProvider>
+      <CartProvider>
+        <html lang="en" className={geistSans.className} suppressHydrationWarning>
+          <body className="bg-background text-foreground">
+            <StarknetProvider>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+                disableTransitionOnChange
+              >
+                <div className="flex flex-col min-h-screen">
+                  <nav className="sticky top-0 z-50 w-full  border-b-foreground/20 h-16 bg-pink-50 dark:bg-gray-900 transition-colors duration-300 shadow-xl">
+                    <HeaderAuth/>
+                  </nav>
+                  <main className="flex-1">{children}</main>
+                </div>
+              </ThemeProvider>
+            </StarknetProvider>
+          </body>
+        </html>
+      </CartProvider>
+    </ClerkProvider>
   )
 }

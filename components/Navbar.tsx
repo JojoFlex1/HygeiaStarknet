@@ -12,7 +12,7 @@ export default function Navbar() {
       <div className="w-full max-w-5xl flex justify-between items-center p-3 px-5 text-sm">
         <div className="flex gap-5 items-center font-semibold">
         <Link
-  href="/protected"
+  href="/home"
   className={`pb-1 transition-colors duration-300
     ${pathname === '/protected'
       ? 'text-pink-700 border-b-2 border-pink-700 dark:text-pink-400 dark:border-pink-400'

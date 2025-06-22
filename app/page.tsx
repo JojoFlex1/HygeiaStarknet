@@ -11,6 +11,7 @@ import {
   Instagram,
   Twitter,
 } from 'lucide-react'
+import { SignInButton } from '@clerk/nextjs'
 
 export default function Home() {
   const router = useRouter()
@@ -22,14 +23,13 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex flex-col lg:flex-row items-center">
             <div className="lg:w-1/2 mb-12 lg:mb-0">
-              
               <h2 className="text-5xl lg:text-6xl font-bold mb-6 leading-tight">
                 <span className="bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
                   Eco-Friendly
                 </span>
                 <br />
                 <span className="bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
-                  Wellness for 
+                  Wellness for
                 </span>
                 <br />
                 <span className="bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
@@ -37,16 +37,19 @@ export default function Home() {
                 </span>
               </h2>
               <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
-                Hygeia is a clean, affordable platform that makes women's wellness products accessible to all through <span className=' text-purple-600'>Blockchain technology</span>, whether you're buying for yourself or choosing to sponsor someone else.
+                Hygeia is a clean, affordable platform that makes women's
+                wellness products accessible to all through{' '}
+                <span className=" text-purple-600">Blockchain technology</span>,
+                whether you're buying for yourself or choosing to sponsor
+                someone else.
               </p>
               <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-                <button
-                  className="flex items-center justify-center px-8 py-4 bg-pink-500 hover:bg-pink-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all"
-                  onClick={() => router.push('/sign-in')}
-                >
-                  Shop Now
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </button>
+                <SignInButton>
+                  <button className="flex items-center justify-center px-8 py-4 bg-pink-500 hover:bg-pink-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all">
+                    Shop Now
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </button>
+                </SignInButton>
               </div>
             </div>
             <div className="lg:w-1/2">
@@ -214,10 +217,9 @@ export default function Home() {
           <div className="bg-pink-50 dark:bg-gray-700 rounded-xl p-8 max-w-4xl mx-auto">
             <div className="text-center">
               <p className="text-lg italic mb-6 text-gray-800 dark:text-gray-200">
-                "Hygeia has transformed how we access menstrual products
-                in our community. The blockchain payment system means we no
-                longer need to worry about bank transfers or mobile money
-                issues."
+                "Hygeia has transformed how we access menstrual products in our
+                community. The blockchain payment system means we no longer need
+                to worry about bank transfers or mobile money issues."
               </p>
               <div className="font-semibold text-gray-800 dark:text-white">
                 Sarah Mwangi
