@@ -11,6 +11,12 @@ import { StarknetProvider } from '../lib/starknet-provider'
 import Image from 'next/image'
 import { ClerkProvider } from '@clerk/nextjs'
 
+const appearance = {
+  elements: {     
+   footer: "hidden"
+  },
+}
+
 const defaultUrl = process.env.VERCEL_URL
   ? `https://hygeia-starknet.vercel.app`
   : 'http://localhost:3000'
@@ -85,7 +91,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <ClerkProvider>
+    <ClerkProvider appearance={appearance}>
       <CartProvider>
         <html lang="en" className={geistSans.className} suppressHydrationWarning>
           <body className="bg-background text-foreground">

@@ -8,6 +8,7 @@ import {
   SignedIn,
   SignedOut,
   UserButton,
+  SignUpButton
 } from '@clerk/nextjs'
 
 export default function HeaderAuth() {
@@ -30,12 +31,19 @@ export default function HeaderAuth() {
       
       <div className="flex items-center gap-4">
         <SignedIn>
-          <UserButton />
+          <UserButton appearance={{
+            elements: {
+              footer:"Hidden"
+            }
+          }} />
         </SignedIn>
         <SignedOut>
           <SignInButton mode="modal">
             <Button className="bg-pink-600">Sign In</Button>
           </SignInButton>
+          <SignUpButton mode="modal">
+            <Button className="bg-pink-600">Sign Up</Button>
+          </SignUpButton>
         </SignedOut>
       </div>
     </div>
