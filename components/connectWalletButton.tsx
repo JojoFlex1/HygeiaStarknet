@@ -96,7 +96,7 @@ export default function ConnectWalletButton() {
         ) : (
           <>
             <Wallet size={20} />
-            <span>Connect Wallet</span>
+            <span className=' hidden sm:block'>Connect Wallet</span>
           </>
         )}
       </button>
