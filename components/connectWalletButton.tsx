@@ -86,7 +86,7 @@ export default function ConnectWalletButton() {
       <button
         onClick={connectWallet}
         disabled={isButtonLoading}
-        className="flex items-center justify-center gap-2 bg-pink-600 hover:bg-pink-400 disabled:bg-blue-400 disabled:cursor-not-allowed text-white font-medium py-3 px-6 rounded-full transition-colors duration-200 min-w-[200px]"
+        className="flex items-center justify-center gap-2 bg-pink-600 hover:bg-pink-400 disabled:bg-blue-400 disabled:cursor-not-allowed text-white font-medium py-2 px-0 sm:py-3 sm:px-6 rounded-full transition-colors duration-200 min-w-[200px]"
       >
         {isButtonLoading ? (
           <>
