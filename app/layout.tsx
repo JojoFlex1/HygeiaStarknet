@@ -1,14 +1,10 @@
-import { EnvVarWarning } from '@/components/env-var-warning'
 import HeaderAuth from '@/components/header-auth'
-import { ThemeSwitcher } from '@/components/ThemeToggleComponent'
-import { hasEnvVars } from '@/utils/supabase/check-env-vars'
 import { Geist } from 'next/font/google'
 import { ThemeProvider } from 'next-themes'
 import Link from 'next/link'
 import './globals.css'
 import { CartProvider } from '@/app/context/cart-context'
 import { StarknetProvider } from '../lib/starknet-provider'
-import Image from 'next/image'
 import { ClerkProvider } from '@clerk/nextjs'
 
 const appearance = {
