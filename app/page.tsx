@@ -1,21 +1,16 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
 import {
   Heart,
-  ArrowRight,
   CreditCard,
   Smile,
   CheckCircle,
-  Facebook,
-  Instagram,
   Twitter,
 } from 'lucide-react'
 import { SignInButton } from '@clerk/nextjs'
 import { InteractiveHoverButton } from "@/components/magicui/interactive-hover-button";
 
 export default function Home() {
-  const router = useRouter()
 
   return (
     <div className="w-full min-h-screen bg-pink-50 dark:bg-gray-900 transition-colors duration-300">
