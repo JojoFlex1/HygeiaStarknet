@@ -1,8 +1,8 @@
 "use client";
 import Link from 'next/link'
 import { Button } from './ui/button'
-import { ThemeSwitcher } from './theme-switcher'
 import Image from 'next/image'
+import ThemeSwitcher from './theme-switcher';
 import {
   SignInButton,
   SignedIn,
@@ -20,16 +20,18 @@ export default function HeaderAuth() {
             src="/images/logo.png"
             alt="Home"
             width={40}
-            height={40} // Fix aspect ratio warning
+            height={40} 
+            quality={100}
           />
           <h2 className="text-2xl font-bold leading-tight bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
             Hygeia
           </h2>
         </Link>
-        <ThemeSwitcher />
+        
       </div>
       
       <div className="flex items-center gap-4">
+        <ThemeSwitcher />
         <SignedIn>
           <UserButton appearance={{
             elements: {
