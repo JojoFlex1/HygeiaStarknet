@@ -9,7 +9,7 @@ import {
   UserButton,
   SignUpButton
 } from '@clerk/nextjs'
-import ThemeToggle from './theme-switcher';
+import ThemeToggle from './ThemeToggleComponent';
 
 export default function HeaderAuth() {
   return (
