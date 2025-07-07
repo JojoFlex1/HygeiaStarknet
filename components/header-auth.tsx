@@ -1,8 +1,8 @@
 "use client";
 import Link from 'next/link'
 import { Button } from './ui/button'
+import { ThemeSwitcher } from './theme-switcher'
 import Image from 'next/image'
-import ThemeSwitcher from './theme-switcher';
 import {
   SignInButton,
   SignedIn,
@@ -27,11 +27,10 @@ export default function HeaderAuth() {
             Hygeia
           </h2>
         </Link>
-        
+        <ThemeSwitcher />
       </div>
       
       <div className="flex items-center gap-4">
-        <ThemeSwitcher />
         <SignedIn>
           <UserButton appearance={{
             elements: {
