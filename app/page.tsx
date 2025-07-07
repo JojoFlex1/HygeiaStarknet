@@ -1,16 +1,20 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import {
   Heart,
+  ArrowRight,
   CreditCard,
   Smile,
   CheckCircle,
+  Facebook,
+  Instagram,
   Twitter,
 } from 'lucide-react'
 import { SignInButton } from '@clerk/nextjs'
-import { InteractiveHoverButton } from "@/components/magicui/interactive-hover-button";
 
 export default function Home() {
+  const router = useRouter()
 
   return (
     <div className="w-full min-h-screen bg-pink-50 dark:bg-gray-900 transition-colors duration-300">
@@ -41,7 +45,10 @@ export default function Home() {
               </p>
               <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
                 <SignInButton>
-                  <InteractiveHoverButton className=' text-xl bg-pink-500 hover:bg-pink-600 p-6 px-10'>Shop now</InteractiveHoverButton>
+                  <button className="flex items-center justify-center px-8 py-4 bg-pink-500 hover:bg-pink-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all">
+                    Shop Now
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </button>
                 </SignInButton>
               </div>
             </div>
