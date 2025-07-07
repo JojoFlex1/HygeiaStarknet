@@ -9,7 +9,7 @@ import {
   UserButton,
   SignUpButton
 } from '@clerk/nextjs'
-import ThemeToggle from './ThemeToggleComponent';
+import NewThemeToggleComponent from './NewThemeToggle';
 
 export default function HeaderAuth() {
   return (
@@ -30,7 +30,7 @@ export default function HeaderAuth() {
       </div>
       
       <div className="flex items-center gap-4">
-        <ThemeToggle/>
+        <NewThemeToggleComponent/>
         <SignedIn>
           <UserButton appearance={{
             elements: {
