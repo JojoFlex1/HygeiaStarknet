@@ -1,11 +1,11 @@
 import HeaderAuth from '@/components/header-auth'
 import { Geist } from 'next/font/google'
 import { ThemeProvider } from 'next-themes'
-import Link from 'next/link'
 import './globals.css'
 import { CartProvider } from '@/app/context/cart-context'
 import { StarknetProvider } from '../lib/starknet-provider'
 import { ClerkProvider } from '@clerk/nextjs'
+import type { Metadata } from 'next'
 
 const appearance = {
   elements: {     
@@ -17,7 +17,7 @@ const defaultUrl = process.env.VERCEL_URL
   ? `https://hygeia-starknet.vercel.app`
   : 'http://localhost:3000'
 
-export const metadata = {
+export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
   title: 'Hygeia',
   description:
