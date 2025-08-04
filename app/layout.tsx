@@ -6,10 +6,11 @@ import { CartProvider } from '@/app/context/cart-context'
 import { StarknetProvider } from '../lib/starknet-provider'
 import { ClerkProvider } from '@clerk/nextjs'
 import type { Metadata } from 'next'
+import MotionWrapper from '@/components/motionwrapper'
 
 const appearance = {
-  elements: {     
-   footer: "hidden"
+  elements: {
+    footer: 'hidden',
   },
 }
 
@@ -73,8 +74,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://hygeia-starknet.vercel.app',
   },
-};
-
+}
 
 const geistSans = Geist({
   display: 'swap',
@@ -89,7 +89,11 @@ export default function RootLayout({
   return (
     <ClerkProvider appearance={appearance}>
       <CartProvider>
-        <html lang="en" className={geistSans.className} suppressHydrationWarning>
+        <html
+          lang="en"
+          className={geistSans.className}
+          suppressHydrationWarning
+        >
           <body className="bg-background text-foreground">
             <StarknetProvider>
               <ThemeProvider
@@ -100,9 +104,11 @@ export default function RootLayout({
               >
                 <div className="flex flex-col min-h-screen">
                   <nav className="sticky top-0 z-50 w-full  border-b-foreground/20 h-16 bg-pink-50 dark:bg-gray-900 transition-colors duration-300 shadow-xl">
-                    <HeaderAuth/>
+                    <HeaderAuth />
                   </nav>
-                  <main className="flex-1">{children}</main>
+                  <main className="flex-1">
+                    <MotionWrapper>{children}</MotionWrapper>
+                  </main>
                 </div>
               </ThemeProvider>
             </StarknetProvider>
