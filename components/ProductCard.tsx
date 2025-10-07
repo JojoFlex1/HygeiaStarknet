@@ -209,10 +209,10 @@ export default function ProductCard({
             {discountedPrice ? (
               <>
                 <span className="text-pink-600 dark:text-pink-400 font-bold">
-                  ${discountedPrice}
+                  KSh {discountedPrice}
                 </span>
                 <span className="line-through text-muted-foreground text-sm">
-                  ${price}
+                  KSh {price}
                 </span>
               </>
             ) : (
