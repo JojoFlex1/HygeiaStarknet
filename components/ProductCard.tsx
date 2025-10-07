@@ -325,7 +325,7 @@ export default function ProductCard({
             <Button
               variant="outline"
               onClick={() => setIsDetailsOpen(false)}
-              className="border-pink-500 text-pink-600 hover:bg-pink-100 dark:hover:bg-pink-900"
+              className="border-pink-500 bg-pink-50 dark:bg-gray-900 text-pink-600 mt-2 hover:bg-pink-100 dark:hover:bg-pink-900"
             >
               Cancel
             </Button>
@@ -339,7 +339,7 @@ export default function ProductCard({
                 })
                 setIsDetailsOpen(false)
               }}
-              className="bg-pink-600 hover:bg-pink-700 text-white dark:bg-pink-500 dark:hover:bg-pink-600"
+              className="bg-pink-600 hover:bg-pink-700 text-white dark:bg-pink-500 dark:hover:bg-pink-600 mt-2"
             >
               Add to Cart
             </Button>
