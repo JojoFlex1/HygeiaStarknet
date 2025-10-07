@@ -18,6 +18,7 @@ import { Contract, CallData, Abi, cairo } from 'starknet'
 import { useConnect, useAccount, useContract } from '@starknet-react/core'
 import hygeniaAbi from '@/lib/hygeia.json'
 import BigNumber from 'bignumber.js'
+import Image from 'next/image'
 
 type ProductProps = {
   id?: number
@@ -185,11 +186,16 @@ export default function ProductCard({
             Sponsored Product
           </div>
         )}
-        <div className="relative w-full h-48">
-          <img
+        <div className="relative">
+          <Image
             src={image}
             alt={title}
-            className="w-full h-full object-cover"
+            width={0}
+            height={0}
+            unoptimized
+            sizes='100vw'
+            quality={100}
+            className="w-full h-48 object-cover "
             onError={(e) => {
               // Fallback image if the image fails to load
               e.currentTarget.src = '/placeholder-product.jpg'
@@ -266,10 +272,14 @@ export default function ProductCard({
             </DialogDescription>
           </DialogHeader>
 
-          <img
+          <Image
             src={image}
             alt={title}
-            className="w-full h-48 object-cover rounded-md"
+            width={0}
+            height={0}
+            sizes='100vw'
+            unoptimized
+            className="w-full h-52 object-cover rounded-md"
             onError={(e) => {
               e.currentTarget.src = '/placeholder-product.jpg'
             }}
