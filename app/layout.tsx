@@ -94,7 +94,7 @@ export default function RootLayout({
           className={geistSans.className}
           suppressHydrationWarning
         >
-          <body className="bg-background text-foreground">
+          <body className="bg-pink-50 dark:bg-gray-900 text-foreground">
             <StarknetProvider>
               <ThemeProvider
                 attribute="class"
