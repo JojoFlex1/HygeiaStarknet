@@ -1,9 +1,9 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react'
+import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -11,31 +11,32 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/components/ui/dialog";
-import { ThumbsUp, ThumbsDown, Sparkles } from "lucide-react";
-import { useCart } from "@/app/context/cart-context";
-import { Contract, CallData, Abi, cairo } from "starknet";
-import { useConnect, useAccount, useContract } from "@starknet-react/core";
-import hygeniaAbi from "@/lib/hygeia.json";
-import BigNumber from "bignumber.js";
+} from '@/components/ui/dialog'
+import { ThumbsUp, ThumbsDown, Sparkles } from 'lucide-react'
+import { useCart } from '@/app/context/cart-context'
+import { Contract, CallData, Abi, cairo } from 'starknet'
+import { useConnect, useAccount, useContract } from '@starknet-react/core'
+import hygeniaAbi from '@/lib/hygeia.json'
+import BigNumber from 'bignumber.js'
 
 type ProductProps = {
-  id?: number;
-  image: string; // This will be the imageUrl from your homepage
-  title: string;
-  description: string;
-  price: number;
-  category?: string;
-  discounted_price?: number; 
-  tokens_earned?: number;
-  is_sponsored?: boolean;
-  views?: number;
-  order_id?: number; 
-  created_at?: string;
-  updated_at?: string;
-};
+  id?: number
+  image: string // This will be the imageUrl from your homepage
+  title: string
+  description: string
+  price: number
+  category?: string
+  discounted_price?: number
+  tokens_earned?: number
+  is_sponsored?: boolean
+  views?: number
+  order_id?: number
+  created_at?: string
+  updated_at?: string
+}
 
-const CONTRACT_ADDRESS = "0x73751fd6a6a217b3f52b4ba2e24617cd4f2af760547448ab5d4ff507136f7a8";
+const CONTRACT_ADDRESS =
+  '0x73751fd6a6a217b3f52b4ba2e24617cd4f2af760547448ab5d4ff507136f7a8'
 
 export default function ProductCard({
   id,
@@ -43,125 +44,137 @@ export default function ProductCard({
   title,
   description,
   price,
-  category = "Health",
+  category = 'Health',
   discounted_price,
   tokens_earned = 10,
   is_sponsored = false,
   views = 2400,
   order_id,
 }: ProductProps) {
-  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
-  const [isRated, setIsRated] = useState(false);
-  const [userRating, setUserRating] = useState<"like" | "dislike" | null>(null);
-  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false)
+  const [isRated, setIsRated] = useState(false)
+  const [userRating, setUserRating] = useState<'like' | 'dislike' | null>(null)
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false)
 
-  const { account, address } = useAccount();
-  const { addToCart } = useCart();
-  
-  const orderId = order_id || id || Math.floor(Math.random() * 1000000);
-  
-  const discountedPrice = discounted_price;
-  const tokensEarned = tokens_earned || 10;
-  const isSponsored = is_sponsored || false;
+  const { account, address } = useAccount()
+  const { addToCart } = useCart()
+
+  const orderId = order_id || id || Math.floor(Math.random() * 1000000)
+
+  const discountedPrice = discounted_price
+  const tokensEarned = tokens_earned || 10
+  const isSponsored = is_sponsored || false
 
   const handleBuyNow = async () => {
-   if (!account || !address) {
-  alert("Please connect your wallet first");
-  return;
-}
+    if (!account || !address) {
+      alert('Please connect your wallet first')
+      return
+    }
 
+    console.log('Contract Address:', CONTRACT_ADDRESS)
+    console.log('Account Address:', address)
 
-    console.log("Contract Address:", CONTRACT_ADDRESS);
-    console.log("Account Address:", address);
-
-    setIsProcessingPayment(true);
+    setIsProcessingPayment(true)
 
     try {
-      const finalPrice = discountedPrice || price;
-      
-     
-      const amountToTransfer = BigNumber(finalPrice).multipliedBy(10 ** 18).toNumber();
-      
+      const finalPrice = discountedPrice || price
 
-      const contractInstance = new Contract(hygeniaAbi as Abi, CONTRACT_ADDRESS, account);
-      
-      console.log("Available contract methods:", Object.keys(contractInstance.functions || {}));
-      
-     
-      const paymentCall = contractInstance.populate('make_payment', [orderId, cairo.uint256(amountToTransfer)]);
-      
-     
+      const amountToTransfer = BigNumber(finalPrice)
+        .multipliedBy(10 ** 18)
+        .toNumber()
+
+      const contractInstance = new Contract(
+        hygeniaAbi as Abi,
+        CONTRACT_ADDRESS,
+        account
+      )
+
+      console.log(
+        'Available contract methods:',
+        Object.keys(contractInstance.functions || {})
+      )
+
+      const paymentCall = contractInstance.populate('make_payment', [
+        orderId,
+        cairo.uint256(amountToTransfer),
+      ])
+
       const multicall = [
         {
           contractAddress: CONTRACT_ADDRESS,
           entrypoint: 'make_payment',
-          calldata: paymentCall.calldata
-        }
-      ];
-      
-     
-      const availableMethods = Object.keys(contractInstance.functions || {});
+          calldata: paymentCall.calldata,
+        },
+      ]
+
+      const availableMethods = Object.keys(contractInstance.functions || {})
       if (availableMethods.includes('award_tokens')) {
-        const tokenRewardCall = contractInstance.populate('award_tokens', [address, tokensEarned]);
+        const tokenRewardCall = contractInstance.populate('award_tokens', [
+          address,
+          tokensEarned,
+        ])
         multicall.push({
           contractAddress: CONTRACT_ADDRESS,
           entrypoint: 'award_tokens',
-          calldata: tokenRewardCall.calldata
-        });
+          calldata: tokenRewardCall.calldata,
+        })
       }
 
-      console.log("Multicall array:", multicall);
+      console.log('Multicall array:', multicall)
 
-     
-      const result = await account.execute(multicall);
-      
-      console.log("Transaction result:", result);
-      
-      const receipt = await account.waitForTransaction(result.transaction_hash);
-      
-      console.log("Transaction receipt:", receipt);
-      
-      const isSuccessful = 
-        ('execution_status' in receipt && receipt.execution_status === "SUCCEEDED") ||
-        ('finality_status' in receipt && (receipt.finality_status === "ACCEPTED_ON_L2" || receipt.finality_status === "ACCEPTED_ON_L1"));
+      const result = await account.execute(multicall)
+
+      console.log('Transaction result:', result)
+
+      const receipt = await account.waitForTransaction(result.transaction_hash)
+
+      console.log('Transaction receipt:', receipt)
+
+      const isSuccessful =
+        ('execution_status' in receipt &&
+          receipt.execution_status === 'SUCCEEDED') ||
+        ('finality_status' in receipt &&
+          (receipt.finality_status === 'ACCEPTED_ON_L2' ||
+            receipt.finality_status === 'ACCEPTED_ON_L1'))
 
       if (isSuccessful) {
-        setIsDetailsOpen(false);
-        alert(`Payment successful! Transaction hash: ${result.transaction_hash}`);
-        
-       
+        setIsDetailsOpen(false)
+        alert(
+          `Payment successful! Transaction hash: ${result.transaction_hash}`
+        )
+
         addToCart({
           title,
           price: finalPrice,
           image,
           quantity: 1,
-        });
+        })
       } else {
-        throw new Error("Transaction failed or was reverted");
+        throw new Error('Transaction failed or was reverted')
       }
     } catch (error: unknown) {
-      console.error("Payment failed:", error);
-      
-      let errorMessage = "Unknown error occurred";
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      } else if (typeof error === 'string') {
-        errorMessage = error;
-      } else if (error && typeof error === 'object' && 'message' in error) {
-        errorMessage = String(error.message);
-      }
-      
-      alert(`Payment failed: ${errorMessage}`);
-    } finally {
-      setIsProcessingPayment(false);
-    }
-  };
+      console.error('Payment failed:', error)
 
-  const handleRate = (rating: "like" | "dislike") => {
-    if (isRated) return;
-    setUserRating(rating);
-    setIsRated(true);
-  };
+      let errorMessage = 'Unknown error occurred'
+      if (error instanceof Error) {
+        errorMessage = error.message
+      } else if (typeof error === 'string') {
+        errorMessage = error
+      } else if (error && typeof error === 'object' && 'message' in error) {
+        errorMessage = String(error.message)
+      }
+
+      alert(`Payment failed: ${errorMessage}`)
+    } finally {
+      setIsProcessingPayment(false)
+    }
+  }
+
+  const handleRate = (rating: 'like' | 'dislike') => {
+    if (isRated) return
+    setUserRating(rating)
+    setIsRated(true)
+  }
 
   return (
     <>
@@ -173,13 +186,13 @@ export default function ProductCard({
           </div>
         )}
         <div className="relative w-full h-48">
-          <img 
-            src={image} 
-            alt={title} 
+          <img
+            src={image}
+            alt={title}
             className="w-full h-full object-cover"
             onError={(e) => {
               // Fallback image if the image fails to load
-              e.currentTarget.src = '/placeholder-product.jpg';
+              e.currentTarget.src = '/placeholder-product.jpg'
             }}
           />
         </div>
@@ -203,19 +216,24 @@ export default function ProductCard({
                 </span>
               </>
             ) : (
-              <span className="font-bold">${price}</span>
+              <span className="font-bold">KSh {price}</span>
             )}
-            <Badge variant="outline" className="ml-auto border-pink-400 text-pink-600 dark:text-pink-300">
+            <Badge
+              variant="outline"
+              className="ml-auto border-pink-400 text-pink-600 dark:text-pink-300"
+            >
               {category}
             </Badge>
           </div>
 
-          <p className="text-sm text-muted-foreground line-clamp-2 dark:text-gray-300">{description}</p>
+          <p className="text-sm text-muted-foreground line-clamp-2 dark:text-gray-300">
+            {description}
+          </p>
 
           <div className="flex gap-2 mt-4">
             <Button
               variant="outline"
-              className="w-full border-pink-500 text-pink-600 hover:bg-pink-100 dark:hover:bg-pink-900"
+              className="w-full border-pink-500 text-pink-600 hover:bg-pink-100 dark:hover:bg-pink-900 bg-pink-50 dark:bg-gray-900"
               onClick={() => setIsDetailsOpen(true)}
             >
               View Details
@@ -225,7 +243,7 @@ export default function ProductCard({
               onClick={handleBuyNow}
               disabled={isProcessingPayment}
             >
-              {isProcessingPayment ? "Processing..." : "Buy Now"}
+              {isProcessingPayment ? 'Processing...' : 'Buy Now'}
             </Button>
           </div>
         </div>
@@ -248,46 +266,54 @@ export default function ProductCard({
             </DialogDescription>
           </DialogHeader>
 
-          <img 
-            src={image} 
-            alt={title} 
+          <img
+            src={image}
+            alt={title}
             className="w-full h-48 object-cover rounded-md"
             onError={(e) => {
-              e.currentTarget.src = '/placeholder-product.jpg';
+              e.currentTarget.src = '/placeholder-product.jpg'
             }}
           />
           <p className="text-sm dark:text-gray-300">{description}</p>
 
           <div className="flex justify-between items-center mt-4">
             <div className="flex gap-2">
-              <Badge variant="outline" className="border-pink-400 text-pink-600 dark:text-pink-300">{category}</Badge>
-              <Badge variant="outline" className="border-pink-400 text-pink-600 dark:text-pink-300">
+              <Badge
+                variant="outline"
+                className="border-pink-400 text-pink-600 dark:text-pink-300"
+              >
+                {category}
+              </Badge>
+              <Badge
+                variant="outline"
+                className="border-pink-400 text-pink-600 dark:text-pink-300"
+              >
                 ♥ {(views / 1000).toFixed(1)}K views
               </Badge>
             </div>
             <div className="flex items-center gap-2">
               <Button
-                variant={userRating === "like" ? "default" : "outline"}
+                variant={userRating === 'like' ? 'default' : 'outline'}
                 size="sm"
-                onClick={() => handleRate("like")}
+                onClick={() => handleRate('like')}
                 disabled={isRated}
                 className={
-                  userRating === "like"
-                    ? "bg-pink-600 hover:bg-pink-700 text-white"
-                    : "border-pink-500 text-pink-600 dark:text-pink-300 hover:bg-pink-50 dark:hover:bg-pink-800"
+                  userRating === 'like'
+                    ? 'bg-pink-600 hover:bg-pink-700 text-white'
+                    : 'border-pink-500 text-pink-600 dark:text-pink-300 hover:bg-pink-50 dark:hover:bg-pink-800'
                 }
               >
                 <ThumbsUp className="h-4 w-4" />
               </Button>
               <Button
-                variant={userRating === "dislike" ? "default" : "outline"}
+                variant={userRating === 'dislike' ? 'default' : 'outline'}
                 size="sm"
-                onClick={() => handleRate("dislike")}
+                onClick={() => handleRate('dislike')}
                 disabled={isRated}
                 className={
-                  userRating === "dislike"
-                    ? "bg-pink-600 hover:bg-pink-700 text-white"
-                    : "border-pink-500 text-pink-600 dark:text-pink-300 hover:bg-pink-50 dark:hover:bg-pink-800"
+                  userRating === 'dislike'
+                    ? 'bg-pink-600 hover:bg-pink-700 text-white'
+                    : 'border-pink-500 text-pink-600 dark:text-pink-300 hover:bg-pink-50 dark:hover:bg-pink-800'
                 }
               >
                 <ThumbsDown className="h-4 w-4" />
@@ -310,8 +336,8 @@ export default function ProductCard({
                   price: discountedPrice || price,
                   image,
                   quantity: 1,
-                });
-                setIsDetailsOpen(false);
+                })
+                setIsDetailsOpen(false)
               }}
               className="bg-pink-600 hover:bg-pink-700 text-white dark:bg-pink-500 dark:hover:bg-pink-600"
             >
@@ -321,5 +347,5 @@ export default function ProductCard({
         </DialogContent>
       </Dialog>
     </>
-  );
+  )
 }

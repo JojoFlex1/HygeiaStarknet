@@ -1,5 +1,3 @@
-// app/page.tsx or wherever your homepage is defined
-
 import { createClient } from "@/utils/supabase/server";
 import ProductCard from "@/components/ProductCard";
 import Navbar from "@/components/Navbar";
